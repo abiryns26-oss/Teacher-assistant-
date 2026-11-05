@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محضّر دروس الفيزياء</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #38bdf8;
+      --primary-dark: #0ea5e9;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --danger: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", "Tahoma", "Arial", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 25px;
+      background: linear-gradient(135deg, #1e3a5f, #0f172a);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 1.9rem;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .input-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 25px;
+    }
+
+    .input-section h2 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      padding: 16px;
+      font-size: 1rem;
+      line-height: 1.8;
+      resize: vertical;
+      direction: rtl;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 22px;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #334155;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #0f172a;
+    }
+
+    .btn-success:hover {
+      filter: brightness(1.1);
+    }
+
+    .results {
+      display: none;
+    }
+
+    .results.active {
+      display: block;
+    }
+
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .section-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-blue { background: rgba(56, 189, 248, 0.2); color: var(--primary); }
+    .badge-green { background: rgba(74, 222, 128, 0.2); color: var(--success); }
+    .badge-yellow { background: rgba(251, 191, 36, 0.2); color: var(--warning); }
+    .badge-red { background: rgba(248, 113, 113, 0.2); color: var(--danger); }
+
+    .item {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .item:last-child {
+      margin-bottom: 0;
+    }
+
+    .item-title {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .empty-msg {
+      color: var(--muted);
+      font-style: italic;
+      padding: 10px 0;
+    }
+
+    .editable {
+      min-height: 40px;
+      outline: none;
+      border-radius: 6px;
+      padding: 4px;
+    }
+
+    .editable:focus {
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .lesson-title-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 12px 16px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      direction: rtl;
+    }
+
+    .lesson-title-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: black;
+        padding: 0;
+      }
+      .input-section, .btn-row, .actions-bar, header p, footer {
+        display: none !important;
+      }
+      .section-card {
+        border: 1px solid #ccc;
+        break-inside: avoid;
+      }
+      .item {
+        background: #f8f8f8;
+        border-color: #ddd;
+      }
+    }
+
+    /* Highlight for physics formulas */
+    .formula {
+      font-family: "Times New Roman", serif;
+      direction: ltr;
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin: 0 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>محضّر دروس الفيزياء</h1>
+      <p>الصق نص الدرس ← اضغط «حضّر الدرس» ← احصل على تعاريف + قوانين + أسئلة مرتبة</p>
+    </header>
+
+    <div class="input-section">
+      <h2>نص الدرس</h2>
+      <textarea id="lessonText" placeholder="الصق هنا نص درس الفيزياء كاملاً...
+
+مثال:
+درس: قانون نيوتن الثاني
+تعريف التسارع: هو معدل تغير السرعة بالنسبة للزمن.
+قانون نيوتن الثاني: القوة = الكتلة × التسارع
+F = m × a
+سؤال: ما هي وحدة القوة في النظام الدولي؟
+..."></textarea>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="prepareLesson()">حضّر الدرس</button>
+        <button class="btn-secondary" onclick="clearAll()">مسح الكل</button>
+        <button class="btn-secondary" onclick="loadExample()">مثال تجريبي</button>
+      </div>
+    </div>
+
+    <div class="results" id="results">
+      <!-- عنوان الدرس -->
+      <div class="section-card">
+        <h3>عنوان الدرس</h3>
+        <input type="text" class="lesson-title-input" id="lessonTitle" placeholder="اكتب أو عدّل عنوان الدرس هنا" />
+      </div>
+
+      <!-- التعاريف -->
+      <div class="section-card">
+        <h3>
+          التعاريف
+          <span class="badge badge-blue" id="defCount">0</span>
+        </h3>
+        <div id="definitions"></div>
+      </div>
+
+      <!-- القوانين -->
+      <div class="section-card">
+        <h3>
+          القوانين والصيغ
+          <span class="badge badge-green" id="lawCount">0</span>
+        </h3>
+        <div id="laws"></div>
+      </div>
+
+      <!-- الأسئلة -->
+      <div class="section-card">
+        <h3>
+          الأسئلة والتمارين
+          <span class="badge badge-yellow" id="qCount">0</span>
+        </h3>
+        <div id="questions"></div>
+      </div>
+
+      <!-- شرح / نص كامل مرتب -->
+      <div class="section-card">
+        <h3>
+          نص الدرس المرتب
+          <span class="badge badge-red">للمراجعة</span>
+        </h3>
+        <div class="item">
+          <div class="editable" id="fullText" contenteditable="true"></div>
+        </div>
+      </div>
+
+      <div class="actions-bar">
+        <button class="btn-success" onclick="window.print()">طباعة / حفظ PDF</button>
+        <button class="btn-secondary" onclick="copyStructured()">نسخ النتيجة</button>
+        <button class="btn-secondary" onclick="addManualItem('def')">+ تعريف يدوي</button>
+        <button class="btn-secondary" onclick="addManualItem('law')">+ قانون يدوي</button>
+        <button class="btn-secondary" onclick="addManualItem('q')">+ سؤال يدوي</button>
+      </div>
+    </div>
+
+    <footer>
+      محضّر دروس الفيزياء • يعمل محلياً بدون إنترنت
+    </footer>
+  </div>
+
+  <script>
+    // كلمات مفتاحية للتعاريف
+    const defKeywords = [
+      "تعريف", "يُعرّف", "يعرف", "هو", "هي", "تُسمى", "يسمى", "نعني", "المقصود",
+      "تعريف:", "تعريف ", "يُقصد", "نقصد"
+    ];
+
+    // كلمات مفتاحية للقوانين
+    const lawKeywords = [
+      "قانون", "معادلة", "صيغة", "علاقة", "يساوي", "F =", "F=", "a =", "v =",
+      "قانون:", "المعادلة", "الصيغة", "العلاقة الرياضية"
+    ];
+
+    // كلمات مفتاحية للأسئلة
+    const qKeywords = [
+      "سؤال", "أسئلة", "تمرين", "تمارين", "احسب", "أوجد", "ما هي", "ما هو",
+      "لماذا", "كيف", "اشرح", "قارن", "علل", "؟"
+    ];
+
+    function prepareLesson() {
+      const text = document.getElementById("lessonText").value.trim();
+      if (!text) {
+        alert("الرجاء لصق نص الدرس أولاً");
+        return;
+      }
+
+      // استخراج العنوان (أول سطر غالباً)
+      let title = "";
+      const lines = text.split(/\n/).map(l => l.trim()).filter(l => l);
+      if (lines.length > 0) {
+        // لو السطر الأول قصير وفيه كلمة درس أو عنوان
+        if (lines[0].length < 80 || /درس|عنوان|الفصل|الوحدة/.test(lines[0])) {
+          title = lines[0].replace(/^(درس|عنوان|الفصل|الوحدة)[:\s]*/i, "").trim();
+        }
+      }
+      document.getElementById("lessonTitle").value = title || "درس فيزياء";
+
+      // تقسيم النص إلى فقرات
+      const paragraphs = text
+        .split(/\n+/)
+        .map(p => p.trim())
+        .filter(p => p.length > 5);
+
+      const definitions = [];
+      const laws = [];
+      const questions = [];
+      const others = [];
+
+      paragraphs.forEach(p => {
+        const lower = p.toLowerCase();
+        let classified = false;
+
+        // أسئلة
+        if (
+          p.includes("؟") ||
+          qKeywords.some(k => p.includes(k)) ||
+          /^(سؤال|تمرين|أسئلة|تمارين)[\s:\d]*/i.test(p)
+        ) {
+          questions.push(p);
+          classified = true;
+        }
+
+        // قوانين
+        if (!classified && (
+          lawKeywords.some(k => p.includes(k)) ||
+          /[A-Za-z]\s*=\s*[A-Za-z0-9\s\+\-\*\/\^\(\)]+/.test(p) ||
+          /F\s*=|a\s*=|v\s*=|m\s*=|W\s*=|P\s*=|E\s*=/.test(p)
+        )) {
+          laws.push(p);
+          classified = true;
+        }
+
+        // تعاريف
+        if (!classified && (
+          defKeywords.some(k => p.includes(k)) ||
+          /^(تعريف|يُعرّف|يُسمى|تُسمى)/i.test(p)
+        )) {
+          definitions.push(p);
+          classified = true;
+        }
+
+        if (!classified) {
+          others.push(p);
+        }
+      });
+
+      // عرض النتائج
+      renderList("definitions", definitions, "لا توجد تعاريف واضحة. يمكنك إضافتها يدوياً.");
+      renderList("laws", laws, "لا توجد قوانين واضحة. يمكنك إضافتها يدوياً.");
+      renderList("questions", questions, "لا توجد أسئلة واضحة. يمكنك إضافتها يدوياً.");
+
+      document.getElementById("defCount").textContent = definitions.length;
+      document.getElementById("lawCount").textContent = laws.length;
+      document.getElementById("qCount").textContent = questions.length;
+
+      // النص الكامل
+      document.getElementById("fullText").innerText = text;
+
+      document.getElementById("results").classList.add("active");
+      document.getElementById("results").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function renderList(containerId, items, emptyMsg) {
+      const container = document.getElementById(containerId);
+      if (items.length === 0) {
+        container.innerHTML = `<div class="empty-msg">${emptyMsg}</div>`;
+        return;
+      }
+      container.innerHTML = items.map((item, i) => `
+        <div class="item">
+          <div class="item-title">${i + 1}.</div>
+          <div class="editable" contenteditable="true">${escapeHtml(item)}</div>
+        </div>
+      `).join("");
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function addManualItem(type) {
+      const map = {
+        def: "definitions",
+        law: "laws",
+        q: "questions"
+      };
+      const container = document.getElementById(map[type]);
+      const empty = container.querySelector(".empty-msg");
+      if (empty) empty.remove();
+
+      const count = container.querySelectorAll(".item").length + 1;
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <div class="item-title">${count}.</div>
+        <div class="editable" contenteditable="true">اكتب هنا...</div>
+      `;
+      container.appendChild(div);
+
+      // تحديث العداد
+      if (type === "def") document.getElementById("defCount").textContent = count;
+      if (type === "law") document.getElementById("lawCount").textContent = count;
+      if (type === "q") document.getElementById("qCount").textContent = count;
+
+      div.querySelector(".editable").focus();
+    }
+
+    function clearAll() {
+      document.getElementById("lessonText").value = "";
+      document.getElementById("results").classList.remove("active");
+      document.getElementById("definitions").innerHTML = "";
+      document.getElementById("laws").innerHTML = "";
+      document.getElementById("questions").innerHTML = "";
+      document.getElementById("fullText").innerText = "";
+      document.getElementById("lessonTitle").value = "";
+    }
+
+    function loadExample() {
+      document.getElementById("lessonText").value = `درس: قانون نيوتن الثاني للحركة
+
+تعريف التسارع:
+التسارع هو معدل تغير السرعة بالنسبة للزمن، ويقاس بوحدة متر لكل ثانية مربعة (m/s²).
+
+تعريف القوة:
+القوة هي مؤثر يغير من حالة الجسم الحركية أو شكله.
+
+قانون نيوتن الثاني:
+ينص قانون نيوتن الثاني على أن القوة المحصلة المؤثرة على جسم تساوي حاصل ضرب كتلته في تسارعه.
+الصيغة الرياضية: F = m × a
+حيث:
+F : القوة بوحدة نيوتن (N)
+m : الكتلة بوحدة كيلوغرام (kg)
+a : التسارع بوحدة m/s²
+
+ملاحظات:
+- إذا كانت القوة ثابتة فإن التسارع يكون ثابتاً.
+- اتجاه التسارع يكون في نفس اتجاه القوة المحصلة.
+
+أسئلة وتمارين:
+1. ما هي وحدة قياس القوة في النظام الدولي للوحدات؟
+2. احسب القوة اللازمة لإعطاء جسم كتلته 5 كغ تسارعاً مقداره 2 m/s².
+3. علل: يكون تسارع الجسم أكبر عندما تكون كتلته أصغر عند نفس القوة.
+4. ما العلاقة بين القوة والتسارع حسب قانون نيوتن الثاني؟`;
+    }
+
+    function copyStructured() {
+      const title = document.getElementById("lessonTitle").value;
+      const defs = Array.from(document.querySelectorAll("#definitions .editable")).map(el => el.innerText).join("\n");
+      const laws = Array.from(document.querySelectorAll("#laws .editable")).map(el => el.innerText).join("\n");
+      const qs = Array.from(document.querySelectorAll("#questions .editable")).map(el => el.innerText).join("\n");
+
+      const text = `عنوان الدرس: ${title}
+
+التعاريف:
+${defs || "لا يوجد"}
+
+القوانين والصيغ:
+${laws || "لا يوجد"}
+
+الأسئلة:
+${qs || "لا يوجد"}`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert("تم نسخ النتيجة إلى الحافظة");
+      }).catch(() => {
+        prompt("انسخ النص يدوياً:", text);
+      });
+    }
+  </script>
+</body>
+</html>
